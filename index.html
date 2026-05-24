@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タスク管理</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>タスク管理</h1>
+    </header>
+
+    <section class="add-task">
+      <h2>タスクを追加</h2>
+      <form id="task-form">
+        <div class="form-group">
+          <input type="text" id="task-title" placeholder="タスクのタイトル" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="task-priority">優先度</label>
+            <select id="task-priority">
+              <option value="high">高</option>
+              <option value="medium" selected>中</option>
+              <option value="low">低</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="task-category">カテゴリー</label>
+            <select id="task-category">
+              <option value="work">仕事</option>
+              <option value="personal">個人</option>
+              <option value="learning">学習</option>
+              <option value="other">その他</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="task-due">期限</label>
+            <input type="date" id="task-due">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">追加</button>
+      </form>
+    </section>
+
+    <section class="controls">
+      <div class="filters">
+        <div class="filter-group">
+          <label for="filter-status">状態</label>
+          <select id="filter-status">
+            <option value="all">すべて</option>
+            <option value="active">未完了</option>
+            <option value="done">完了済み</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-priority">優先度</label>
+          <select id="filter-priority">
+            <option value="all">すべて</option>
+            <option value="high">高</option>
+            <option value="medium">中</option>
+            <option value="low">低</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-category">カテゴリー</label>
+          <select id="filter-category">
+            <option value="all">すべて</option>
+            <option value="work">仕事</option>
+            <option value="personal">個人</option>
+            <option value="learning">学習</option>
+            <option value="other">その他</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="sort-by">並び替え</label>
+          <select id="sort-by">
+            <option value="created">作成順</option>
+            <option value="due">期限順</option>
+            <option value="priority">優先度順</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="task-list-section">
+      <div class="list-header">
+        <span id="task-count"></span>
+      </div>
+      <ul id="task-list"></ul>
+      <p id="empty-message" class="empty-message hidden">タスクがありません</p>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
