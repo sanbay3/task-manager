@@ -45,6 +45,7 @@ header h1 {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--color-primary);
+  text-align: center;
 }
 
 /* Form */
