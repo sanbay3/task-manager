@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- State ---
   let tasks = load();
+  let editingId = null;
 
   // --- DOM refs ---
   const form         = document.getElementById('task-form');
@@ -65,6 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
     tasks = tasks.filter(t => t.id !== id);
     save();
     render();
+  }
+
+  function updateTask(id, updates) {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      Object.assign(task, updates);
+      save();
+      editingId = null;
+      render();
+    }
   }
 
   // --- Filtering & sorting ---
@@ -156,12 +167,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const actions = document.createElement('div');
     actions.className = 'task-actions';
 
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn-edit';
+    editBtn.title = '編集';
+    editBtn.textContent = '✎';
+    editBtn.addEventListener('click', () => {
+      editingId = task.id;
+      render();
+    });
+
     const delBtn = document.createElement('button');
     delBtn.className = 'btn-delete';
     delBtn.title = '削除';
     delBtn.textContent = '✕';
     delBtn.addEventListener('click', () => deleteTask(task.id));
 
+    actions.appendChild(editBtn);
     actions.appendChild(delBtn);
 
     li.appendChild(checkbox);
@@ -171,13 +192,104 @@ document.addEventListener('DOMContentLoaded', () => {
     return li;
   }
 
+  function createEditEl(task) {
+    const li = document.createElement('li');
+    li.className = 'task-item editing';
+
+    const form = document.createElement('form');
+    form.className = 'edit-form';
+
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.className = 'edit-title';
+    titleInput.value = task.title;
+    titleInput.required = true;
+
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+
+    const priSel = document.createElement('select');
+    priSel.className = 'edit-select';
+    [['high', '高'], ['medium', '中'], ['low', '低']].forEach(([v, l]) => {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = l;
+      if (v === task.priority) opt.selected = true;
+      priSel.appendChild(opt);
+    });
+
+    const catSel = document.createElement('select');
+    catSel.className = 'edit-select';
+    [['work', '仕事'], ['personal', '個人'], ['learning', '学習'], ['other', 'その他']].forEach(([v, l]) => {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = l;
+      if (v === task.category) opt.selected = true;
+      catSel.appendChild(opt);
+    });
+
+    const dueInput = document.createElement('input');
+    dueInput.type = 'date';
+    dueInput.className = 'edit-select';
+    dueInput.value = task.dueDate || '';
+
+    row.appendChild(priSel);
+    row.appendChild(catSel);
+    row.appendChild(dueInput);
+
+    const btnRow = document.createElement('div');
+    btnRow.className = 'edit-actions';
+
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'submit';
+    saveBtn.className = 'btn btn-primary btn-sm';
+    saveBtn.textContent = '保存';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'btn btn-sm';
+    cancelBtn.textContent = 'キャンセル';
+    cancelBtn.addEventListener('click', () => {
+      editingId = null;
+      render();
+    });
+
+    btnRow.appendChild(saveBtn);
+    btnRow.appendChild(cancelBtn);
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const title = titleInput.value.trim();
+      if (!title) return;
+      updateTask(task.id, {
+        title,
+        priority: priSel.value,
+        category: catSel.value,
+        dueDate: dueInput.value || null,
+      });
+    });
+
+    form.appendChild(titleInput);
+    form.appendChild(row);
+    form.appendChild(btnRow);
+    li.appendChild(form);
+    return li;
+  }
+
   function render() {
     const filtered = getFiltered();
 
     taskList.innerHTML = '';
     const fragment = document.createDocumentFragment();
-    filtered.forEach(t => fragment.appendChild(createTaskEl(t)));
+    filtered.forEach(t => fragment.appendChild(
+      t.id === editingId ? createEditEl(t) : createTaskEl(t)
+    ));
     taskList.appendChild(fragment);
+
+    if (editingId) {
+      const editTitle = taskList.querySelector('.edit-title');
+      if (editTitle) editTitle.focus();
+    }
 
     const active = tasks.filter(t => !t.done).length;
     taskCount.textContent = `未完了 ${active} / 全 ${tasks.length} 件`;
@@ -198,6 +310,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   [filterStatus, filterPriority, filterCategory, sortBy].forEach(el => {
     el.addEventListener('change', render);
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && editingId) {
+      editingId = null;
+      render();
+    }
   });
 
   // --- Init ---
