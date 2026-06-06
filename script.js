@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const taskList     = document.getElementById('task-list');
   const taskCount    = document.getElementById('task-count');
   const emptyMsg     = document.getElementById('empty-message');
+  const clearDoneBtn  = document.getElementById('clear-done');
   const filterStatus   = document.getElementById('filter-status');
   const filterPriority = document.getElementById('filter-priority');
   const filterCategory = document.getElementById('filter-category');
@@ -64,6 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function deleteTask(id) {
     tasks = tasks.filter(t => t.id !== id);
+    save();
+    render();
+  }
+
+  function clearDone() {
+    tasks = tasks.filter(t => !t.done);
     save();
     render();
   }
@@ -291,8 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (editTitle) editTitle.focus();
     }
 
-    const active = tasks.filter(t => !t.done).length;
+    const done = tasks.filter(t => t.done).length;
+    const active = tasks.length - done;
     taskCount.textContent = `未完了 ${active} / 全 ${tasks.length} 件`;
+    clearDoneBtn.classList.toggle('hidden', done === 0);
 
     emptyMsg.classList.toggle('hidden', filtered.length > 0);
   }
@@ -307,6 +316,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dueInput.value = '';
     titleInput.focus();
   });
+
+  clearDoneBtn.addEventListener('click', clearDone);
 
   [filterStatus, filterPriority, filterCategory, sortBy].forEach(el => {
     el.addEventListener('change', render);

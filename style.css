@@ -174,11 +174,30 @@ select:focus {
 }
 
 .list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 12px 20px;
   border-bottom: 1px solid var(--color-border);
   font-size: 0.85rem;
   color: var(--color-text-muted);
   font-weight: 500;
+}
+
+.btn-clear-done {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.btn-clear-done:hover {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
 }
 
 #task-list {
