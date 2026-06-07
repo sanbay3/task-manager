@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const editBtn = document.createElement('button');
     editBtn.className = 'btn-edit';
     editBtn.title = '編集';
+    editBtn.setAttribute('aria-label', '編集');
     editBtn.textContent = '✎';
     editBtn.addEventListener('click', () => {
       editingId = task.id;
@@ -186,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const delBtn = document.createElement('button');
     delBtn.className = 'btn-delete';
     delBtn.title = '削除';
+    delBtn.setAttribute('aria-label', '削除');
     delBtn.textContent = '✕';
     delBtn.addEventListener('click', () => deleteTask(task.id));
 
