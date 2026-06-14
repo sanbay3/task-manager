@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- State ---
   let tasks = load();
   let editingId = null;
+  let undoTask = null;
+  let undoTimer = null;
 
   // --- DOM refs ---
   const form         = document.getElementById('task-form');
@@ -20,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const taskList     = document.getElementById('task-list');
   const taskCount    = document.getElementById('task-count');
   const emptyMsg     = document.getElementById('empty-message');
+  const undoToast     = document.getElementById('undo-toast');
+  const undoBtn       = document.getElementById('undo-btn');
   const clearDoneBtn  = document.getElementById('clear-done');
   const filterStatus   = document.getElementById('filter-status');
   const filterPriority = document.getElementById('filter-priority');
@@ -64,8 +68,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function deleteTask(id) {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
     tasks = tasks.filter(t => t.id !== id);
     save();
+    render();
+    showUndo(task);
+  }
+
+  function showUndo(task) {
+    if (undoTimer) clearTimeout(undoTimer);
+    undoTask = task;
+    undoToast.classList.remove('hidden');
+    undoTimer = setTimeout(hideUndo, 4000);
+  }
+
+  function hideUndo() {
+    undoTask = null;
+    undoTimer = null;
+    undoToast.classList.add('hidden');
+  }
+
+  function undoDelete() {
+    if (!undoTask) return;
+    clearTimeout(undoTimer);
+    tasks.push(undoTask);
+    save();
+    hideUndo();
     render();
   }
 
@@ -319,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
     titleInput.focus();
   });
 
+  undoBtn.addEventListener('click', undoDelete);
   clearDoneBtn.addEventListener('click', clearDone);
 
   [filterStatus, filterPriority, filterCategory, sortBy].forEach(el => {
