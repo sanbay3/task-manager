@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const taskList     = document.getElementById('task-list');
   const taskCount    = document.getElementById('task-count');
   const emptyMsg     = document.getElementById('empty-message');
+  const searchInput   = document.getElementById('search-input');
   const undoToast     = document.getElementById('undo-toast');
   const undoBtn       = document.getElementById('undo-btn');
   const clearDoneBtn  = document.getElementById('clear-done');
@@ -121,11 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const category = filterCategory.value;
     const sort     = sortBy.value;
 
+    const query = searchInput.value.trim().toLowerCase();
+
     let result = tasks.filter(t => {
       if (status === 'active' && t.done) return false;
       if (status === 'done'   && !t.done) return false;
       if (priority !== 'all' && t.priority !== priority) return false;
       if (category !== 'all' && t.category !== category) return false;
+      if (query && !t.title.toLowerCase().includes(query)) return false;
       return true;
     });
 
@@ -348,6 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     titleInput.focus();
   });
 
+  searchInput.addEventListener('input', render);
   undoBtn.addEventListener('click', undoDelete);
   clearDoneBtn.addEventListener('click', clearDone);
 
