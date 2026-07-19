@@ -10,8 +10,8 @@
   --color-border: #e2e8f0;
   --color-text: #1a202c;
   --color-text-muted: #718096;
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
+  --color-primary: #059669;
+  --color-primary-hover: #047857;
   --color-danger: #e53e3e;
   --color-danger-hover: #c53030;
   --color-high: #e53e3e;
@@ -282,8 +282,8 @@ select:focus {
 .priority-low    { background: #f0fff4; color: var(--color-low); }
 
 .category-badge {
-  background: #eef2ff;
-  color: #4338ca;
+  background: #d1fae5;
+  color: #065f46;
 }
 
 .due-badge {
@@ -314,7 +314,7 @@ select:focus {
 
 .btn-edit:hover {
   color: var(--color-primary);
-  background: #eef2ff;
+  background: #d1fae5;
 }
 
 .btn-delete:hover {
