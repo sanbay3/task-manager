@@ -156,10 +156,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${y}/${m}/${d}`;
   }
 
+  // 今日の日付を "YYYY-MM-DD" 形式で返す（ブラウザのローカル時刻基準）。
+  // toISOString() はUTC（世界標準時）に変換してから文字列にするため、
+  // 日本（UTC+9）では0時〜9時の間に前日の日付になってしまう。
+  // そこで年・月・日をローカル時刻から取り出して自分で組み立てる。
+  function getToday() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() は0始まり
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
   function isOverdue(dueDate) {
     if (!dueDate) return false;
-    const today = new Date().toISOString().slice(0, 10);
-    return dueDate < today;
+    return dueDate < getToday();
   }
 
   function createTaskEl(task) {
