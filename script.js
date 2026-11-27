@@ -47,7 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Task operations ---
   function addTask(title, priority, category, dueDate) {
     tasks.push({
-      id: Date.now().toString(),
+      // Date.now() は同じミリ秒内に連続追加すると重複する可能性があるため、
+      // 毎回ほぼ確実に異なる値を返す crypto.randomUUID() を使う
+      id: crypto.randomUUID(),
       title,
       priority,
       category,
